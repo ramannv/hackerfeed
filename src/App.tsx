@@ -27,10 +27,13 @@ function App() {
   useEffect(() => {
     if (location.pathname === '/about') {
       setView('about');
-    } else {
-      setView('feed');
+    } else if (location.pathname === '/') {
+      // Don't reset view if already on feed or starred
+      if (view === 'about') {
+        setView('feed');
+      }
     }
-  }, [location]);
+  }, [location, view]);
 
   const loadStories = useCallback(async () => {
     setIsLoading(true);
@@ -77,8 +80,7 @@ function App() {
 
   const handleViewChange = useCallback((newView: 'feed' | 'starred') => {
     setView(newView);
-    navigate('/');
-  }, [navigate]);
+  }, []);
 
   const handleToggleDarkMode = useCallback(() => {
     setDarkMode((prev: boolean) => {
@@ -158,6 +160,28 @@ function App() {
               </div>
             )}
 
+            {view === 'starred' && starredIds.size > 0 && (
+              <div className="flex items-center justify-between px-2 py-2 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-mono text-gray-600 dark:text-gray-400">
+                    {starredIds.size} starred
+                  </span>
+                  <button
+                    onClick={() => setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')}
+                    className="touch-manipulation px-2 py-1 text-xs font-mono text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    {sortOrder === 'newest' ? '↓ newest first' : '↑ oldest first'}
+                  </button>
+                </div>
+                <button
+                  onClick={handleExportCSV}
+                  className="touch-manipulation px-2 py-1 text-xs font-mono text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                >
+                  export csv
+                </button>
+              </div>
+            )}
+
             <div className="mt-2">
               {displayedStories.map((story, index) => (
                 <StoryCard
@@ -192,9 +216,6 @@ function App() {
         onToggleDarkMode={handleToggleDarkMode}
         view={view}
         onViewChange={handleViewChange}
-        onExportCSV={handleExportCSV}
-        sortOrder={sortOrder}
-        onSortChange={setSortOrder}
       />
 
       <Routes>
