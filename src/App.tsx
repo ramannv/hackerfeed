@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { StoryWithRecommendation } from './types';
 import { hnApi } from './services/hnApi';
 import { storageService } from './services/storage';
@@ -11,7 +11,6 @@ import { exportStarredStoriesToCSV } from './utils/csv';
 
 function App() {
   const location = useLocation();
-  const navigate = useNavigate();
   const [stories, setStories] = useState<StoryWithRecommendation[]>([]);
   const [starredIds, setStarredIds] = useState<Set<number>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
