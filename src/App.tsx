@@ -26,14 +26,8 @@ function App() {
       const fetchedStories = await hnApi.getTopStories(50);
       const scoredStories = recommendationEngine.scoreStories(fetchedStories);
 
-      // Sort: recommended first, then by score
-      const sorted = scoredStories.sort((a, b) => {
-        if (a.isRecommended && !b.isRecommended) return -1;
-        if (!a.isRecommended && b.isRecommended) return 1;
-        return b.score - a.score;
-      });
-
-      setStories(sorted);
+      // Keep HN's original ranking order, just add recommendation flags
+      setStories(scoredStories);
       setStarredIds(storageService.getStarredStoryIds());
     } catch (err) {
       setError('Failed to load stories. Please try again.');
