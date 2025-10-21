@@ -2,6 +2,8 @@
 
 Minimal Hacker News reader with personalized recommendations.
 
+The prototype lives here: https://hnfeed.netlify.app/
+
 ## Features
 
 - Personalized recommendations based on starred stories
