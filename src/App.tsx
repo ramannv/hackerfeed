@@ -72,7 +72,7 @@ function App() {
   }, []);
 
   const handleToggleDarkMode = useCallback(() => {
-    setDarkMode(prev => {
+    setDarkMode((prev: boolean) => {
       const newMode = !prev;
       localStorage.setItem('darkMode', JSON.stringify(newMode));
       return newMode;
