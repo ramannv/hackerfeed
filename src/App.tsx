@@ -17,6 +17,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<'feed' | 'starred' | 'about'>('feed');
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('darkMode');
     return saved ? JSON.parse(saved) : false;
@@ -101,10 +102,25 @@ function App() {
   }, [darkMode]);
 
   const displayedStories = view === 'starred'
-    ? stories.filter(s => starredIds.has(s.id))
+    ? (() => {
+        const starredStories = storageService.getStarredStories();
+        const starredMap = new Map(starredStories.map(s => [s.id, s.starredAt]));
+
+        const filtered = stories.filter(s => starredIds.has(s.id));
+
+        return filtered.sort((a, b) => {
+          const timeA = starredMap.get(a.id) || 0;
+          const timeB = starredMap.get(b.id) || 0;
+          return sortOrder === 'newest' ? timeB - timeA : timeA - timeB;
+        });
+      })()
     : stories;
 
-  const FeedContent = () => (
+  const FeedContent = () => {
+    const starredStories = storageService.getStarredStories();
+    const starredMap = new Map(starredStories.map(s => [s.id, s.starredAt]));
+
+    return (
     <main className="max-w-4xl mx-auto">
         {error && (
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-400 px-3 py-2 mx-2 mt-2 text-sm font-mono">
@@ -150,6 +166,7 @@ function App() {
                   isStarred={starredIds.has(story.id)}
                   onToggleStar={() => handleToggleStar(story.id)}
                   index={index + 1}
+                  starredAt={view === 'starred' ? starredMap.get(story.id) : undefined}
                 />
               ))}
             </div>
@@ -162,7 +179,8 @@ function App() {
           </>
         )}
     </main>
-  );
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black transition-colors">
@@ -175,6 +193,8 @@ function App() {
         view={view}
         onViewChange={handleViewChange}
         onExportCSV={handleExportCSV}
+        sortOrder={sortOrder}
+        onSortChange={setSortOrder}
       />
 
       <Routes>

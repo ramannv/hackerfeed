@@ -6,11 +6,13 @@ interface StoryCardProps {
   isStarred: boolean;
   onToggleStar: () => void;
   index: number;
+  starredAt?: number;
 }
 
-export const StoryCard = ({ story, isStarred, onToggleStar, index }: StoryCardProps) => {
+export const StoryCard = ({ story, isStarred, onToggleStar, index, starredAt }: StoryCardProps) => {
   const domain = story.url ? storageService.extractDomain(story.url) : null;
   const timeAgo = formatTimeAgo(story.time);
+  const starredTimeAgo = starredAt ? formatTimeAgo(Math.floor(starredAt / 1000)) : null;
 
   const handleStarClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -62,6 +64,9 @@ export const StoryCard = ({ story, isStarred, onToggleStar, index }: StoryCardPr
           <div className="text-xs text-gray-600 dark:text-gray-400 mt-0.5 font-mono">
             {story.score} pts · {story.by} · {timeAgo}
             {story.descendants !== undefined && ` · ${story.descendants} comments`}
+            {starredTimeAgo && (
+              <span className="text-yellow-600 dark:text-yellow-500"> · ★ {starredTimeAgo}</span>
+            )}
           </div>
         </div>
       </div>
