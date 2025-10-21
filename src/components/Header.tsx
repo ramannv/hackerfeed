@@ -6,9 +6,10 @@ interface HeaderProps {
   onToggleDarkMode: () => void;
   view: 'feed' | 'starred';
   onViewChange: (view: 'feed' | 'starred') => void;
+  onExportCSV?: () => void;
 }
 
-export const Header = ({ starredCount, onRefresh, isLoading, darkMode, onToggleDarkMode, view, onViewChange }: HeaderProps) => {
+export const Header = ({ starredCount, onRefresh, isLoading, darkMode, onToggleDarkMode, view, onViewChange, onExportCSV }: HeaderProps) => {
   return (
     <header className="sticky top-0 z-10 bg-[#ff6600] dark:bg-black dark:border-b dark:border-green-600 text-white">
       <div className="max-w-4xl mx-auto px-2 py-2 flex items-center justify-between">
@@ -64,6 +65,16 @@ export const Header = ({ starredCount, onRefresh, isLoading, darkMode, onToggleD
           >
             {isLoading ? '...' : 'refresh'}
           </button>
+
+          {view === 'starred' && starredCount > 0 && onExportCSV && (
+            <button
+              onClick={onExportCSV}
+              className="touch-manipulation px-2 py-1 text-xs font-mono hover:bg-white/10 dark:hover:bg-green-600/20 transition-colors"
+              aria-label="Export starred stories as CSV"
+            >
+              export
+            </button>
+          )}
         </div>
       </div>
     </header>

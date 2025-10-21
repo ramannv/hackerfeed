@@ -5,6 +5,7 @@ import { storageService } from './services/storage';
 import { recommendationEngine } from './services/recommendations';
 import { Header } from './components/Header';
 import { StoryCard } from './components/StoryCard';
+import { exportStarredStoriesToCSV } from './utils/csv';
 
 function App() {
   const [stories, setStories] = useState<StoryWithRecommendation[]>([]);
@@ -78,6 +79,11 @@ function App() {
     });
   }, []);
 
+  const handleExportCSV = useCallback(() => {
+    const starredStories = storageService.getStarredStories();
+    exportStarredStoriesToCSV(starredStories);
+  }, []);
+
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
@@ -100,6 +106,7 @@ function App() {
         onToggleDarkMode={handleToggleDarkMode}
         view={view}
         onViewChange={handleViewChange}
+        onExportCSV={handleExportCSV}
       />
 
       <main className="max-w-4xl mx-auto">
