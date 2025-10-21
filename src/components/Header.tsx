@@ -1,10 +1,12 @@
+import { Link } from 'react-router-dom';
+
 interface HeaderProps {
   starredCount: number;
   onRefresh: () => void;
   isLoading: boolean;
   darkMode: boolean;
   onToggleDarkMode: () => void;
-  view: 'feed' | 'starred';
+  view: 'feed' | 'starred' | 'about';
   onViewChange: (view: 'feed' | 'starred') => void;
   onExportCSV?: () => void;
 }
@@ -48,6 +50,18 @@ export const Header = ({ starredCount, onRefresh, isLoading, darkMode, onToggleD
           >
             starred
           </button>
+
+          <Link
+            to="/about"
+            className={`touch-manipulation px-2 py-1 text-xs font-mono transition-colors ${
+              view === 'about'
+                ? 'bg-white/20 dark:bg-green-600/30'
+                : 'hover:bg-white/10 dark:hover:bg-green-600/20'
+            }`}
+            aria-label="About"
+          >
+            about
+          </Link>
 
           <button
             onClick={onToggleDarkMode}

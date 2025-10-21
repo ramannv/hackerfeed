@@ -1,22 +1,35 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { StoryWithRecommendation } from './types';
 import { hnApi } from './services/hnApi';
 import { storageService } from './services/storage';
 import { recommendationEngine } from './services/recommendations';
 import { Header } from './components/Header';
 import { StoryCard } from './components/StoryCard';
+import { About } from './components/About';
 import { exportStarredStoriesToCSV } from './utils/csv';
 
 function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [stories, setStories] = useState<StoryWithRecommendation[]>([]);
   const [starredIds, setStarredIds] = useState<Set<number>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [view, setView] = useState<'feed' | 'starred'>('feed');
+  const [view, setView] = useState<'feed' | 'starred' | 'about'>('feed');
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('darkMode');
     return saved ? JSON.parse(saved) : false;
   });
+
+  // Update view based on route
+  useEffect(() => {
+    if (location.pathname === '/about') {
+      setView('about');
+    } else {
+      setView('feed');
+    }
+  }, [location]);
 
   const loadStories = useCallback(async () => {
     setIsLoading(true);
@@ -63,7 +76,8 @@ function App() {
 
   const handleViewChange = useCallback((newView: 'feed' | 'starred') => {
     setView(newView);
-  }, []);
+    navigate('/');
+  }, [navigate]);
 
   const handleToggleDarkMode = useCallback(() => {
     setDarkMode((prev: boolean) => {
@@ -90,20 +104,8 @@ function App() {
     ? stories.filter(s => starredIds.has(s.id))
     : stories;
 
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black transition-colors">
-      <Header
-        starredCount={starredIds.size}
-        onRefresh={loadStories}
-        isLoading={isLoading}
-        darkMode={darkMode}
-        onToggleDarkMode={handleToggleDarkMode}
-        view={view}
-        onViewChange={handleViewChange}
-        onExportCSV={handleExportCSV}
-      />
-
-      <main className="max-w-4xl mx-auto">
+  const FeedContent = () => (
+    <main className="max-w-4xl mx-auto">
         {error && (
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-400 px-3 py-2 mx-2 mt-2 text-sm font-mono">
             [ERROR] {error}
@@ -159,7 +161,26 @@ function App() {
             )}
           </>
         )}
-      </main>
+    </main>
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-black transition-colors">
+      <Header
+        starredCount={starredIds.size}
+        onRefresh={loadStories}
+        isLoading={isLoading}
+        darkMode={darkMode}
+        onToggleDarkMode={handleToggleDarkMode}
+        view={view}
+        onViewChange={handleViewChange}
+        onExportCSV={handleExportCSV}
+      />
+
+      <Routes>
+        <Route path="/" element={<FeedContent />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
     </div>
   );
 }
