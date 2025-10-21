@@ -106,24 +106,24 @@ function App() {
     ? (() => {
         const starredStories = storageService.getStarredStories();
 
-        // Sort by starred timestamp
+        // Convert StarredStory to StoryWithRecommendation and sort by starred timestamp
         return starredStories
           .map(s => ({
             ...s,
-            isRecommended: false // Don't show recommendations in starred view
-          }))
+            score: 0,
+            time: Math.floor(s.starredAt / 1000),
+            type: 'story',
+            isRecommended: false
+          } as StoryWithRecommendation))
           .sort((a, b) => {
-            const timeA = a.starredAt || 0;
-            const timeB = b.starredAt || 0;
+            const timeA = (a as any).starredAt || 0;
+            const timeB = (b as any).starredAt || 0;
             return sortOrder === 'newest' ? timeB - timeA : timeA - timeB;
           });
       })()
     : stories;
 
   const FeedContent = () => {
-    const starredStories = storageService.getStarredStories();
-    const starredMap = new Map(starredStories.map(s => [s.id, s.starredAt]));
-
     return (
     <main className="max-w-4xl mx-auto">
         {error && (
