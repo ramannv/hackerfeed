@@ -1,4 +1,4 @@
-# Deployment Guide for Netlify
+# HackerFeed - Deployment Guide for Netlify
 
 ## Quick Deploy
 
@@ -20,7 +20,7 @@ netlify deploy --prod
 1. **Push to GitHub**:
    ```bash
    # Create a new repo on GitHub, then:
-   git remote add origin https://github.com/yourusername/hnfeed.git
+   git remote add origin https://github.com/yourusername/hackerfeed.git
    git push -u origin master
    ```
 

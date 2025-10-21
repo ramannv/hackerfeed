@@ -15,7 +15,7 @@ export const Header = ({ starredCount, onRefresh, isLoading, darkMode, onToggleD
       <div className="max-w-4xl mx-auto px-2 py-2 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-sm font-bold font-mono dark:text-green-400">
-            <span className="dark:text-green-600">&gt;</span> hn_feed
+            <span className="dark:text-green-600">&gt;</span> hackerfeed
             {starredCount > 0 && (
               <span className="ml-2 text-xs opacity-75">
                 [{starredCount}★]

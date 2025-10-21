@@ -1,11 +1,11 @@
-# HN Feed - Personalized Hacker News Reader
+# HackerFeed - Personalized Hacker News Reader
 
 > A minimal, privacy-first Hacker News reader with intelligent personalization based on your reading habits.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Deploy to Netlify](https://img.shields.io/badge/Deploy-Netlify-00C7B7)](https://app.netlify.com/start)
 
-**[Live Demo](https://your-demo-url.netlify.app)** | **[Report Bug](https://github.com/yourusername/hnfeed/issues)** | **[Request Feature](https://github.com/yourusername/hnfeed/issues)**
+**[Live Demo](https://your-demo-url.netlify.app)** | **[Report Bug](https://github.com/yourusername/hackerfeed/issues)** | **[Request Feature](https://github.com/yourusername/hackerfeed/issues)**
 
 ---
 
@@ -31,8 +31,8 @@ Visit the deployed app (link above) and start starring stories!
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/hnfeed.git
-cd hnfeed
+git clone https://github.com/yourusername/hackerfeed.git
+cd hackerfeed
 
 # Install dependencies
 npm install
@@ -192,8 +192,8 @@ Contributions are welcome! This is an **open-source project** under the MIT Lice
 
 ### Development Setup
 ```bash
-git clone https://github.com/yourusername/hnfeed.git
-cd hnfeed
+git clone https://github.com/yourusername/hackerfeed.git
+cd hackerfeed
 npm install
 npm run dev
 ```
@@ -228,8 +228,8 @@ Free to use, modify, and distribute. Attribution appreciated but not required.
 
 ## 📬 Contact & Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/hnfeed/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/hnfeed/discussions)
+- **Issues**: [GitHub Issues](https://github.com/yourusername/hackerfeed/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/hackerfeed/discussions)
 - **Author**: [@yourusername](https://github.com/yourusername)
 
 ---
@@ -238,7 +238,7 @@ Free to use, modify, and distribute. Attribution appreciated but not required.
 
 If you find this project useful, consider giving it a ⭐ on GitHub!
 
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/hnfeed&type=Date)](https://star-history.com/#yourusername/hnfeed&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/hackerfeed&type=Date)](https://star-history.com/#yourusername/hackerfeed&Date)
 
 ---
 

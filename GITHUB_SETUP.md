@@ -4,7 +4,7 @@
 
 1. Go to https://github.com/new
 2. Fill in the details:
-   - **Repository name**: `hnfeed` (or whatever you prefer)
+   - **Repository name**: `hackerfeed`
    - **Description**: "Personalized Hacker News reader with AI recommendations"
    - **Visibility**: Public or Private (your choice)
    - ⚠️ **DO NOT** check "Initialize with README" (you already have one)
@@ -17,7 +17,7 @@ GitHub will show you commands. Use these:
 
 ```bash
 # Add GitHub as remote origin
-git remote add origin https://github.com/YOUR_USERNAME/hnfeed.git
+git remote add origin https://github.com/YOUR_USERNAME/hackerfeed.git
 
 # Push your code
 git push -u origin master
@@ -29,7 +29,7 @@ git push -u origin master
 
 ```bash
 # 1. Add your GitHub repo as remote
-git remote add origin https://github.com/YOUR_USERNAME/hnfeed.git
+git remote add origin https://github.com/YOUR_USERNAME/hackerfeed.git
 
 # 2. Push code to GitHub
 git push -u origin master
@@ -44,7 +44,7 @@ git push origin alpha
 If you get this error, remove the old remote first:
 ```bash
 git remote remove origin
-git remote add origin https://github.com/YOUR_USERNAME/hnfeed.git
+git remote add origin https://github.com/YOUR_USERNAME/hackerfeed.git
 git push -u origin master
 ```
 
@@ -60,13 +60,13 @@ GitHub requires a Personal Access Token (PAT) instead of password:
 ### Want to use SSH instead?
 ```bash
 # Add SSH remote instead of HTTPS
-git remote add origin git@github.com:YOUR_USERNAME/hnfeed.git
+git remote add origin git@github.com:YOUR_USERNAME/hackerfeed.git
 git push -u origin master
 ```
 
 ## After Pushing
 
-Your repo will be at: `https://github.com/YOUR_USERNAME/hnfeed`
+Your repo will be at: `https://github.com/YOUR_USERNAME/hackerfeed`
 
 Now you can:
 - ✅ Connect to Netlify for auto-deployment
