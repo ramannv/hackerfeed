@@ -7,9 +7,10 @@ interface StoryCardProps {
   onToggleStar: () => void;
   index: number;
   starredAt?: number;
+  showDelete?: boolean;
 }
 
-export const StoryCard = ({ story, isStarred, onToggleStar, index, starredAt }: StoryCardProps) => {
+export const StoryCard = ({ story, isStarred, onToggleStar, index, starredAt, showDelete }: StoryCardProps) => {
   const domain = story.url ? storageService.extractDomain(story.url) : null;
   const timeAgo = formatTimeAgo(story.time);
   const starredTimeAgo = starredAt ? formatTimeAgo(Math.floor(starredAt / 1000)) : null;
@@ -18,6 +19,12 @@ export const StoryCard = ({ story, isStarred, onToggleStar, index, starredAt }: 
     e.preventDefault();
     e.stopPropagation();
     onToggleStar();
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onToggleStar(); // Same as unstarring
   };
 
   const openStory = () => {
@@ -33,15 +40,27 @@ export const StoryCard = ({ story, isStarred, onToggleStar, index, starredAt }: 
           {index}.
         </span>
 
-        <button
-          onClick={handleStarClick}
-          className="flex-shrink-0 mt-0.5 touch-manipulation"
-          aria-label={isStarred ? 'Unstar story' : 'Star story'}
-        >
-          <span className={`text-base ${isStarred ? 'text-yellow-500' : 'text-gray-400 dark:text-gray-600'}`}>
-            {isStarred ? '★' : '☆'}
-          </span>
-        </button>
+        {showDelete ? (
+          <button
+            onClick={handleDeleteClick}
+            className="flex-shrink-0 mt-0.5 touch-manipulation"
+            aria-label="Delete starred story"
+          >
+            <span className="text-base text-red-500 dark:text-red-400">
+              ×
+            </span>
+          </button>
+        ) : (
+          <button
+            onClick={handleStarClick}
+            className="flex-shrink-0 mt-0.5 touch-manipulation"
+            aria-label={isStarred ? 'Unstar story' : 'Star story'}
+          >
+            <span className={`text-base ${isStarred ? 'text-yellow-500' : 'text-gray-400 dark:text-gray-600'}`}>
+              {isStarred ? '★' : '☆'}
+            </span>
+          </button>
+        )}
 
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2 flex-wrap">

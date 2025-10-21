@@ -105,15 +105,18 @@ function App() {
   const displayedStories = view === 'starred'
     ? (() => {
         const starredStories = storageService.getStarredStories();
-        const starredMap = new Map(starredStories.map(s => [s.id, s.starredAt]));
 
-        const filtered = stories.filter(s => starredIds.has(s.id));
-
-        return filtered.sort((a, b) => {
-          const timeA = starredMap.get(a.id) || 0;
-          const timeB = starredMap.get(b.id) || 0;
-          return sortOrder === 'newest' ? timeB - timeA : timeA - timeB;
-        });
+        // Sort by starred timestamp
+        return starredStories
+          .map(s => ({
+            ...s,
+            isRecommended: false // Don't show recommendations in starred view
+          }))
+          .sort((a, b) => {
+            const timeA = a.starredAt || 0;
+            const timeB = b.starredAt || 0;
+            return sortOrder === 'newest' ? timeB - timeA : timeA - timeB;
+          });
       })()
     : stories;
 
@@ -189,7 +192,8 @@ function App() {
                   isStarred={starredIds.has(story.id)}
                   onToggleStar={() => handleToggleStar(story.id)}
                   index={index + 1}
-                  starredAt={view === 'starred' ? starredMap.get(story.id) : undefined}
+                  starredAt={view === 'starred' ? (story as any).starredAt : undefined}
+                  showDelete={view === 'starred'}
                 />
               ))}
             </div>
