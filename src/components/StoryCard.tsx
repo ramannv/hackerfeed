@@ -40,17 +40,7 @@ export const StoryCard = ({ story, isStarred, onToggleStar, index, starredAt, sh
           {index}.
         </span>
 
-        {showDelete ? (
-          <button
-            onClick={handleDeleteClick}
-            className="flex-shrink-0 mt-0.5 touch-manipulation"
-            aria-label="Delete starred story"
-          >
-            <span className="text-base text-red-500 dark:text-red-400">
-              ×
-            </span>
-          </button>
-        ) : (
+        {!showDelete && (
           <button
             onClick={handleStarClick}
             className="flex-shrink-0 mt-0.5 touch-manipulation"
@@ -88,6 +78,18 @@ export const StoryCard = ({ story, isStarred, onToggleStar, index, starredAt, sh
             )}
           </div>
         </div>
+
+        {showDelete && (
+          <button
+            onClick={handleDeleteClick}
+            className="flex-shrink-0 touch-manipulation p-1 -m-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded transition-colors"
+            aria-label="Delete starred story"
+          >
+            <span className="text-xl font-bold leading-none text-red-600 dark:text-red-400">
+              ×
+            </span>
+          </button>
+        )}
       </div>
     </div>
   );

@@ -58,8 +58,13 @@ function App() {
   }, [loadStories]);
 
   const handleToggleStar = useCallback((storyId: number) => {
-    const story = stories.find(s => s.id === storyId);
-    if (!story) return;
+    // Find story in current feed or create minimal story object for deletion
+    let story = stories.find(s => s.id === storyId);
+
+    if (!story) {
+      // Story not in current feed, create minimal object for toggleStar
+      story = { id: storyId, title: '', by: '', score: 0, time: 0, type: 'story' };
+    }
 
     storageService.toggleStar(story);
     const newStarredIds = storageService.getStarredStoryIds();
