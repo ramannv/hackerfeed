@@ -9,6 +9,50 @@ import { StoryCard } from './components/StoryCard';
 import { About } from './components/About';
 import { exportStarredStoriesToCSV } from './utils/csv';
 
+// Helper function to format date as "Today", "Yesterday", or "Mon, Jan 1, 2025"
+function formatDateGroup(timestamp: number): string {
+  const date = new Date(timestamp);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  // Reset time to midnight for comparison
+  const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const yesterdayOnly = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate());
+
+  if (dateOnly.getTime() === todayOnly.getTime()) {
+    return 'Today';
+  } else if (dateOnly.getTime() === yesterdayOnly.getTime()) {
+    return 'Yesterday';
+  } else {
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
+    });
+  }
+}
+
+// Group stories by the date they were starred
+function groupStoriesByDate(stories: StoryWithRecommendation[]): Map<string, StoryWithRecommendation[]> {
+  const groups = new Map<string, StoryWithRecommendation[]>();
+
+  stories.forEach(story => {
+    const starredAt = (story as any).starredAt;
+    if (starredAt) {
+      const dateKey = formatDateGroup(starredAt);
+      if (!groups.has(dateKey)) {
+        groups.set(dateKey, []);
+      }
+      groups.get(dateKey)!.push(story);
+    }
+  });
+
+  return groups;
+}
+
 function App() {
   const location = useLocation();
   const [stories, setStories] = useState<StoryWithRecommendation[]>([]);
@@ -17,6 +61,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<'feed' | 'starred' | 'about'>('feed');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
+  const [collapsedDates, setCollapsedDates] = useState<Set<string>>(new Set());
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('darkMode');
     return saved ? JSON.parse(saved) : false;
@@ -97,6 +142,18 @@ function App() {
   const handleExportCSV = useCallback(() => {
     const starredStories = storageService.getStarredStories();
     exportStarredStoriesToCSV(starredStories);
+  }, []);
+
+  const toggleDateCollapse = useCallback((dateKey: string) => {
+    setCollapsedDates(prev => {
+      const next = new Set(prev);
+      if (next.has(dateKey)) {
+        next.delete(dateKey);
+      } else {
+        next.add(dateKey);
+      }
+      return next;
+    });
   }, []);
 
   useEffect(() => {
@@ -190,17 +247,62 @@ function App() {
             )}
 
             <div className="mt-2">
-              {displayedStories.map((story, index) => (
-                <StoryCard
-                  key={story.id}
-                  story={story}
-                  isStarred={starredIds.has(story.id)}
-                  onToggleStar={() => handleToggleStar(story.id)}
-                  index={index + 1}
-                  starredAt={view === 'starred' ? (story as any).starredAt : undefined}
-                  showDelete={view === 'starred'}
-                />
-              ))}
+              {view === 'starred' ? (
+                (() => {
+                  const groupedStories = groupStoriesByDate(displayedStories);
+                  let storyIndex = 0;
+
+                  return Array.from(groupedStories.entries()).map(([dateKey, stories]) => {
+                    const isCollapsed = collapsedDates.has(dateKey);
+
+                    return (
+                      <div key={dateKey}>
+                        <div
+                          className="sticky top-0 bg-gray-100 dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700 px-2 py-2.5 flex items-center justify-between cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors z-10"
+                          onClick={() => toggleDateCollapse(dateKey)}
+                        >
+                          <span className="text-base font-mono font-semibold text-gray-700 dark:text-gray-300">
+                            {isCollapsed ? '▸' : '▾'} {dateKey}
+                          </span>
+                          <span className="text-xs font-mono text-gray-500 dark:text-gray-500">
+                            {stories.length} {stories.length === 1 ? 'story' : 'stories'}
+                          </span>
+                        </div>
+                        {!isCollapsed && (
+                          <div>
+                            {stories.map(story => {
+                              storyIndex++;
+                              return (
+                                <StoryCard
+                                  key={story.id}
+                                  story={story}
+                                  isStarred={starredIds.has(story.id)}
+                                  onToggleStar={() => handleToggleStar(story.id)}
+                                  index={storyIndex}
+                                  starredAt={(story as any).starredAt}
+                                  showDelete={true}
+                                />
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  });
+                })()
+              ) : (
+                displayedStories.map((story, index) => (
+                  <StoryCard
+                    key={story.id}
+                    story={story}
+                    isStarred={starredIds.has(story.id)}
+                    onToggleStar={() => handleToggleStar(story.id)}
+                    index={index + 1}
+                    starredAt={undefined}
+                    showDelete={false}
+                  />
+                ))
+              )}
             </div>
 
             {displayedStories.length === 0 && !isLoading && view === 'feed' && (
